@@ -1,13 +1,22 @@
 import { combineReducers } from 'redux';
-import { RootState } from './state';
-import { todoReducer } from './todos';
+import { editUserReducer } from './editUser';
+import { userAuthorizationReducer } from './userAuthorization';
+import { searchUserReducer } from './searchUser';
 import { routerReducer, RouterState } from 'react-router-redux';
+import { EditUserState } from 'app/reducers/editUser';
+import { UserAuthorizationState } from 'app/reducers/userAuthorization';
+import { SearchUserState } from 'app/reducers/searchUser';
 
-export { RootState, RouterState };
+export type RootState = {
+  editUser: EditUserState;
+  userAuthorization: UserAuthorizationState;
+  searchUser: SearchUserState;
+  router: RouterState;
+};
 
-// NOTE: current type definition of Reducer in 'react-router-redux' and 'redux-actions' module
-// doesn't go well with redux@4
 export const rootReducer = combineReducers<RootState>({
-  todos: todoReducer as any,
+  editUser: editUserReducer as any,
+  userAuthorization: userAuthorizationReducer as any,
+  searchUser: searchUserReducer as any,
   router: routerReducer as any
 });

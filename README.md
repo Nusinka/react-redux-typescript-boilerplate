@@ -1,17 +1,6 @@
-# Frontend Boilerplate with React, Redux & TypeScript
+# Example with React, Redux & TypeScript
 
-A bare minimum react-redux-webpack-typescript boilerplate with TodoMVC example. 
-
-[Live demo](https://rokoroku.github.io/react-redux-typescript-boilerplate)
-
-Note that this project does not include **Server-Side Rendering**,  **Testing Frameworks** and other stuffs that makes the package unnecessarily complicated.
-
-Ideal for creating React apps from the scratch.
-
-See also: [react-mobx-typescript-boilerplate](https://github.com/rokoroku/react-mobx-typescript-boilerplate)
-
-### Branches
-- [`feature-tslint`](https://github.com/rokoroku/react-redux-typescript-boilerplate/tree/feature/tslint): yarn + tslint + prettier integrated branch.
+See also: [react-redux-typescript-boilerplate](https://github.com/rokoroku/react-redux-typescript-boilerplate)
 
 ## Contains
 
@@ -21,7 +10,6 @@ See also: [react-mobx-typescript-boilerplate](https://github.com/rokoroku/react-
 - [x] [React Router](https://github.com/ReactTraining/react-router) 4.2
 - [x] [React Router Redux](https://github.com/reactjs/react-router-redux) 5
 - [x] [Redux DevTools Extension](https://github.com/zalmoxisus/redux-devtools-extension)
-- [x] [TodoMVC example](http://todomvc.com)
 
 ### Build tools
 

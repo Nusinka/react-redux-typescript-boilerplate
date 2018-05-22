@@ -1,0 +1,15 @@
+form {
+  position: relative;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.errorField {
+  color: rgb(255, 64, 129);
+  position: absolute;
+  bottom: 50px;
+}
