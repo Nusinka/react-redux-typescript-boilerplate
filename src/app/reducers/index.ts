@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form';
 import { editUserReducer } from './editUser';
 import { userAuthorizationReducer } from './userAuthorization';
 import { searchUserReducer } from './searchUser';
@@ -12,11 +13,13 @@ export type RootState = {
   userAuthorization: UserAuthorizationState;
   searchUser: SearchUserState;
   router: RouterState;
+  form: any;
 };
 
 export const rootReducer = combineReducers<RootState>({
   editUser: editUserReducer as any,
   userAuthorization: userAuthorizationReducer as any,
   searchUser: searchUserReducer as any,
-  router: routerReducer as any
+  router: routerReducer as any,
+  form: formReducer as any
 });

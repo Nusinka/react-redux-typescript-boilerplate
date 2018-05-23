@@ -1,11 +1,12 @@
+///<reference path="../../../../node_modules/@types/react-router/index.d.ts"/>
 import * as React from 'react';
 import * as styles from './style.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { Route, Redirect, withRouter, RouteComponentProps } from 'react-router-dom';
+import { Route, Redirect, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, Action } from 'redux';
 import { LogoutButton } from 'app/components';
-import { UserCard } from 'app/containers';
+import UserCard from 'app/containers/UserCard';
 import { userData } from 'app/data/usersBase';
 import { phoneBook } from 'app/data/phoneBook';
 import { RootState } from 'app/reducers';
@@ -15,15 +16,13 @@ import { SearchContainer } from 'app/containers/SearchContainer';
 import AuthorizationBlock from '../AuthorizationBlock';
 
 export namespace App {
-  export interface Props extends RouteComponentProps<{}> {
+  export interface Props<T> extends RouteComponentProps<T> {
     userActions: UserActions;
     authorizeActions: UserAuthorizationActions;
     isUserAuthorized: boolean;
-    [propName: string]: any;
   }
 }
 
-@withRouter
 @connect(
   (state: RootState) => ({
     isUserAuthorized: state.userAuthorization.isUserAuthorized
@@ -33,14 +32,14 @@ export namespace App {
     authorizeActions: bindActionCreators(omit(UserAuthorizationActions, 'Type'), dispatch)
   })
 )
-export class App extends React.Component<App.Props> {
+export class App extends React.Component<App.Props<any>> {
   componentWillMount() {
     localStorage.clear();
     localStorage.setItem('users', JSON.stringify(userData));
     localStorage.setItem('phoneBook', JSON.stringify(phoneBook));
   }
 
-  componentWillReceiveProps(newProps: App.Props) {
+  componentWillReceiveProps(newProps: App.Props<any>) {
     if (this.props.isUserAuthorized && !newProps.isUserAuthorized) {
       this.props.history.push('/');
     }

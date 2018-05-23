@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AutoComplete from 'material-ui/AutoComplete';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, Action } from 'redux';
 import { UserTable } from 'app/components/UserTable';
@@ -16,13 +16,12 @@ type userData = {
 };
 
 export namespace SearchContainer {
-  export interface Props extends RouteComponentProps<any> {
+  export interface Props<T> extends RouteComponentProps<T> {
     searchActions: SearchActions;
     usersList: UserModel[];
   }
 }
 
-@withRouter
 @connect(
   (state: RootState) => ({
     usersList: state.searchUser.usersList
@@ -31,10 +30,9 @@ export namespace SearchContainer {
     searchActions: bindActionCreators(omit(SearchActions, 'Type'), dispatch)
   })
 )
-export class SearchContainer extends React.Component<SearchContainer.Props, {}> {
-  constructor(props: SearchContainer.Props) {
-    super(props);
-    props.searchActions.getUsersList();
+export class SearchContainer extends React.Component<SearchContainer.Props<any>> {
+  componentWillMount() {
+    this.props.searchActions.getUsersList();
   }
 
   formatUsersList = (usersList: UserModel[]): userData[] =>

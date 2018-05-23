@@ -4,6 +4,8 @@ import TextField from 'material-ui/TextField';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, Action } from 'redux';
+import { reduxForm, InjectedFormProps, Field, WrappedFieldProps } from 'redux-form';
+import { isEmpty } from 'lodash';
 import { RootState } from 'app/reducers';
 import RaisedButton from 'material-ui/RaisedButton';
 import { fieldLabels } from 'app/data/fieldLabels';
@@ -11,39 +13,26 @@ import { UserActions } from 'app/actions/editUser';
 import { omit } from 'app/utils';
 import { UserModel } from 'app/models';
 
-type fieldNameType = 'firstName' | 'lastName' | 'dateOfBirth' | 'phoneNumber';
-
-namespace UserCard {
-  export interface Props extends RouteComponentProps<any> {
-    userActions: UserActions;
-    userData: UserModel;
-    isEditedData: boolean;
-  }
+interface FormProps {
+  isEditedData: boolean;
+  userData: UserModel;
+  saveData: (data: UserModel) => void;
+  getUserData: (data: UserModel) => void;
+  userActions: UserActions;
 }
 
-@withRouter
-@connect(
-  (state: RootState) => ({
-    userData: state.editUser.userData,
-    isEditedData: state.editUser.isEditedData
-  }),
-  (dispatch: Dispatch<Action, RootState>) => ({
-    userActions: bindActionCreators(omit(UserActions, 'Type'), dispatch)
-  })
-)
-export class UserCard extends React.Component<UserCard.Props, UserModel> {
-  constructor(props: UserCard.Props) {
+type AllFormProps = FormProps & InjectedFormProps<{}> & RouteComponentProps<any>;
+
+export class UserCard extends React.Component<AllFormProps> {
+  constructor(props: AllFormProps) {
     super(props);
     this.props.userActions.getUserData(+props.match.params.id);
-    this.state = {
-      ...this.props.userData
-    };
   }
 
-  componentWillReceiveProps(newProps: UserCard.Props) {
-    this.setState(() => ({ ...newProps.userData }));
-    // if (isEmpty(this.props.userData) && !isEmpty(newProps.userData)) {
-    // }
+  componentWillReceiveProps(newProps: AllFormProps) {
+    if (isEmpty(this.props.userData) && !isEmpty(newProps.userData)) {
+      this.props.initialize(newProps.userData);
+    }
     if (!this.props.isEditedData && newProps.isEditedData) {
       this.props.history.push('/phoneBook');
     }
@@ -51,10 +40,10 @@ export class UserCard extends React.Component<UserCard.Props, UserModel> {
 
   handleSubmit = (event: React.SyntheticEvent<EventTarget>): void => {
     event.preventDefault();
-    this.props.userActions.saveUserData(this.state);
+    this.props.userActions.saveUserData(this.props.userData);
   };
 
-  getTextFieldType = (fieldName: fieldNameType) => {
+  getTextFieldType = (fieldName: string): string => {
     switch (fieldName) {
       case 'dateOfBirth':
         return 'date';
@@ -67,17 +56,18 @@ export class UserCard extends React.Component<UserCard.Props, UserModel> {
     }
   };
 
-  renderTextField = (fieldName: fieldNameType) => {
-    const label = fieldLabels[fieldName];
-    const type = this.getTextFieldType(fieldName);
+  renderTextField = (props: WrappedFieldProps) => {
+    const { name } = props.input;
+    const label = fieldLabels[name];
+    const type = this.getTextFieldType(name);
+
     return (
       <TextField
         hintText={label}
         floatingLabelText={label}
-        name={fieldName}
+        name={name}
         type={type}
-        value={this.state[fieldName]}
-        onChange={(event, value) => this.setState({ [fieldName as any]: value })}
+        {...props.input}
       />
     );
   };
@@ -85,13 +75,26 @@ export class UserCard extends React.Component<UserCard.Props, UserModel> {
   render() {
     return (
       <form className={styles.formFields} onSubmit={this.handleSubmit}>
-        {this.renderTextField('firstName')}
-        {this.renderTextField('lastName')}
-        {this.renderTextField('dateOfBirth')}
-        {this.renderTextField('phoneNumber')}
-
+        <Field name="firstName" component={this.renderTextField} />
+        <Field name="lastName" component={this.renderTextField} />
+        <Field name="dateOfBirth" component={this.renderTextField} />
+        <Field name="phoneNumber" component={this.renderTextField} />
         <RaisedButton label="Submit" type="submit" primary={true} onClick={this.handleSubmit} />
       </form>
     );
   }
 }
+
+const Form = reduxForm({
+  form: 'UserForm'
+})(UserCard as any);
+
+export default withRouter<FormProps & RouteComponentProps<any>>(connect(
+  (state: RootState) => ({
+    userData: state.editUser.userData,
+    isEditedData: state.editUser.isEditedData
+  }),
+  (dispatch: Dispatch<Action, RootState>) => ({
+    userActions: bindActionCreators(omit(UserActions, 'Type'), dispatch)
+  })
+)(Form) as any);

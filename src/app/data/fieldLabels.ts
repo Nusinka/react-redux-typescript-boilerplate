@@ -1,4 +1,5 @@
 export interface FieldLabels {
+  [key: string]: string;
   id: string;
   firstName: string;
   lastName: string;

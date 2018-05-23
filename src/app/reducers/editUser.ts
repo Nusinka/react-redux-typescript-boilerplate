@@ -3,7 +3,7 @@ import { UserActions } from 'app/actions/editUser';
 import { UserModel } from 'app/models';
 
 export type EditUserState = {
-  userData: UserModel;
+  userData: UserModel | {};
   isEditedData: boolean;
 };
 
@@ -24,6 +24,7 @@ export const editUserReducer = handleActions<EditUserState, {}>(
     [UserActions.Type.SAVE_USER_DATA]: (state): EditUserState => {
       return {
         ...state,
+        userData: initialState.userData,
         isEditedData: true
       };
     }

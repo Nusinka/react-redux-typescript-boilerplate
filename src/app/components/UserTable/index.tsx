@@ -12,16 +12,13 @@ import { UserModel } from 'app/models';
 import * as styles from './style.css';
 
 export namespace UserTable {
-  export interface Props extends RouteComponentProps<void> {
+  export interface Props<T> extends RouteComponentProps<T> {
     usersList: UserModel[];
   }
 }
 
-export class UserTable extends React.Component<UserTable.Props, {}> {
-  constructor(props: UserTable.Props, context?: any) {
-    super(props, context);
-    this.state = { editing: false };
-  }
+export class UserTable extends React.Component<UserTable.Props<any> & RouteComponentProps<any>> {
+  state = { editing: false };
 
   handleClick = (ids: number[]) => {
     const selectedUser = this.props.usersList.find((user) => user.id === ids[0] + 1);
